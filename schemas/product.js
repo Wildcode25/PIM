@@ -1,5 +1,5 @@
 import z from "zod";
-
+// DOUBT: was this made by chatgpt?
 export const productSchema = z.object({
     name: z.string({
         required_error: "name is required",

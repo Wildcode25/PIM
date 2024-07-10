@@ -29,7 +29,10 @@ export class UserModel {
         "SELECT * FROM customer WHERE email=$1",
         [email]
       );
+      // TODO: checking for user existance should be handled in the controller not in the model
+      // TODO: model should only interact with the database
       if (rowCount > 0) return { message: "user already exists" };
+      // TODO: hash password should be done in the controller not in the model
       const hashedPassword = await bcrypt.hash(password, 10);
       await pool.query(
         "INSERT INTO customer(name, email, password) VALUES($1, $2, $3)",
@@ -47,11 +50,12 @@ export class UserModel {
         "SELECT * FROM customer WHERE email=$1",
         [email]
       );
-
+      // TODO: checking for user existance should be handled in the controller not in the model
       if (rows.length == 0) return { message: "user doesn't exist" };
+      // TODO: compare password should be done in the controller not in the model
       const isValid = await bcrypt.compare(password, rows[0].password);
       if (!isValid) return { message: "Incorrect password" };
-
+      
       const {password: _, ...user }=rows[0];
       return user;
     } catch (e) {

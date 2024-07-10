@@ -1,5 +1,6 @@
 import z from "zod";
 
+// DOUBT: was this made by chatgpt?
 export const registerSchema = z
   .object({
     name: z.string({

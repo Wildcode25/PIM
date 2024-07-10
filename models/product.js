@@ -2,10 +2,13 @@ import { resolve } from "path";
 import { pool } from "../config/db.js";
 
 export class ProductModel {
+  // TODO: page argument is not used
+  // TODO: this method is not used anywhere
   getAllProducts = async ({ page }) => {
     let products = [];
 
     try {
+      // TODO: refactor the logic bellow with 2 asignments in same lines is hard to read
       const { rows } = (products = await this.getCategories(rows));
       return products;
     } catch (e) {
@@ -14,11 +17,13 @@ export class ProductModel {
   };
   getProductById = async ({ id }) => {
     try {
+      // TODO: should fetch the product and the categories in a single query
       const products = await pool
         .query(`SELECT * FROM product WHERE id=$1`, [id])
         .then((data) => data.rows);
 
       if (products.length == 0) return null;
+    
       const categories = await pool
         .query(`SELECT name FROM categories WHERE product_id=$1`, [id])
         .then((data) => data.rows);
@@ -31,14 +36,18 @@ export class ProductModel {
       console.error(error.message);
     }
   };
+  // TODO: method not requested
   getProductsByCategory = async ({ category, page }) => {
+    // TODO: why offset of 12? this number should be a global constant and should be used in the controller
     const offset = (page - 1) * 12;
     let products;
     try {
+      // TODO: business logic of checking for all should be in the controller
+    
       if (category == "all") {
         products = await pool.query(`SELECT * FROM product ORDER BY id
         LIMIT 12 OFFSET ${offset}`).then(data=>data.rows);
-        
+        // TODO: else should have a block of code to make it more readable
       } else
         products = await pool
           .query(
@@ -56,6 +65,7 @@ export class ProductModel {
     }
   };
   createProduct = async ({ product }) => {
+    // DOUBT: why do not destructure categories from product as well with the other properties?
     const categories = product.categories;
     const { name, description, price, stock, customer_id } = product;
     try {
@@ -64,6 +74,7 @@ export class ProductModel {
                 VALUES($1,$2,$3,$4,$5)`,
         [name, description, price, stock, customer_id]
       );
+      
       const { rows } = await pool.query(
         `SELECT id FROM product ORDER BY id DESC LIMIT 1;`
       );

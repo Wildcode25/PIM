@@ -1,3 +1,4 @@
+-- DOUBT: I have doubts about if this was done with chatgpt, table should be named user instead of customer
 CREATE TABLE customer (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(50),
@@ -16,6 +17,7 @@ CREATE TABLE product (
 	FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
 alter table product add column categories varchar(10);
+-- TODO: categories should be a separate table
 
 INSERT INTO customer(name, email, password)
 VALUES('Emmanuel', 'enmanuelcastillo1999@gmail.com', 'mordex123');
