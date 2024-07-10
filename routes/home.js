@@ -1,10 +1,24 @@
-import {Router} from 'express'
-import { ProductController } from '../controllers/product.js';
+import { Router } from "express";
+import { ProductController } from "../controllers/product.js";
 
-const homeRouter = new Router();
-const productController=new ProductController()
+export function createdHomeRouter({ProductModel}) {
+  const homeRouter = new Router();
+  const productController = new ProductController({ProductModel});
 
-homeRouter.get('/:page', productController.getAllProducts)
-homeRouter.post('/', productController.createProduct)
+  homeRouter.use((req, res, next)=>{
+    const {user} = req.session
+    if(!user) return res.json({
+      message: "access declined"
+  })
+    next()
+  })
+  homeRouter.get("/:id", productController.getProductById);
 
-export {homeRouter}
+  homeRouter.get("/:category/:page", productController.getProductsByCategory);
+
+  homeRouter.put("/:id", productController.editProduct);
+
+  homeRouter.delete("/:id", productController.deleteProduct);
+
+  return homeRouter;
+}

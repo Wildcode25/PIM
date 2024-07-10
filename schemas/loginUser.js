@@ -1,10 +1,7 @@
 import z from 'zod'
 
-export const userSchema = z.object({
-    name: z.string({
-      invalid_type_error: 'Name title must be a string',
-      required_error: 'Name is required.'
-    }),
+export const loginSchema = z.object({
+  
     email: z.string().email({
         required_error: "Email is required",
         message: 'Invalid email'
