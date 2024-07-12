@@ -1,6 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import { createdHomeRouter } from "../routes/home.js";
+import { createdHomeRouter } from "../routes/producto.js";
 import { createUserRouter } from "../routes/userManagement.js";
 import { ProductModel } from "../models/product.js";
 import { UserModel } from "../models/user.js";
@@ -22,6 +22,6 @@ expressApp.use((req, res, next) => {
 });
 expressApp.get("/", (req, res) => res.json({ message: "welcome" }));
 expressApp.use("/users", createUserRouter({ UserModel }));
-expressApp.use("/home", createdHomeRouter({ ProductModel }));
+expressApp.use("/home", createdProductRouter({ ProductModel }));
 
 export default expressApp;
