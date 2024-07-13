@@ -1,39 +1,48 @@
-DROP DATABASE PIM IF EXISTS;
+DROP DATABASE IF EXISTS PIM;
+
 CREATE DATABASE PIM;
-USE DATABASE PIM;
+
 CREATE TABLE customer (
-	id SERIAL PRIMARY KEY,
-	name VARCHAR(50),
-	email VARCHAR(50),
-	password VARCHAR(50)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    email VARCHAR(50),
+    password VARCHAR(50)
 );
+
 CREATE TABLE product (
-    id SERIAL PRIMARY KEY, 
-    name VARCHAR(100) NOT NULL, 
-    description TEXT, 
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
     price DECIMAL(10, 2) NOT NULL,
     stock INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	customer_id int,
-	FOREIGN KEY (customer_id) REFERENCES customer(id)
+    customer_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
+
 CREATE TABLE category (
     id SERIAL PRIMARY KEY,
-    name varchar(50),
+    name VARCHAR(50),
+    description TEXT
 );
+
 CREATE TABLE product_category (
-    product_id PRIMARY KEY,
-    category_id PRIMARY KEY,
-    FOREIGN KEY(product_id) REFERENCES product(id);
-    FOREIGN KEY (category_id) REFERENCES category(id);
+    product_id INT,
+    category_id INT,
+    PRIMARY KEY (product_id, category_id),
+    FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (category_id) REFERENCES category(id)
 );
-INSERT INTO category(name) VALUES
-("kitchen"),
-("appliances"),
-("cleaning"),
-("laundry"),
-("cooling"),
-("home");
+
+
+INSERT INTO category (name, description) VALUES
+('kitchen', 'For the kitchen'),
+('appliances', 'I dontt know'),
+('cleaning', 'To clean'),
+('laundry', 'For laundry'),
+('cooling', 'Storage foods'),
+('home', 'For the home');
+
 INSERT INTO customer(name, email, password)
 VALUES('Emmanuel', 'enmanuelcastillo1999@gmail.com', 'mordex123');
