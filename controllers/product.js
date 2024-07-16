@@ -35,7 +35,7 @@ export class ProductController {
       const result = validateInput(productSchema, req.body);
       if (result.success) {
         const categories = result.data.categories;
-        const { categories: _, ...product } = {...result.data, customer_id: req.access_token.user.id};
+        const { categories: _, ...product } = {...result.data, customer_id: req.session.user.id};
         let createdProduct = await this.productModel.createProduct({ product });
         categories.forEach(
           async (category) =>
