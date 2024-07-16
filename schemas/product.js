@@ -13,8 +13,7 @@ export const productSchema = z.object({
     stock: z.number({
         required_error: "stock is required",
     }).int(),
-    customer_id: z.number({required_error: "customer_id is required"}).int(),
-    categories: z.array(z.enum(["Appliances", "Kitchen", "Cleaning","Cooking", "Laundry", "Cooling", "Home"], {
+    categories: z.array(z.enum(["appliances", "kitchen", "cleaning","cooking", "laundry", "cooling", "home"], {
         message: "Invalid categorie",
         required_error: "Categories is required"
     }))
