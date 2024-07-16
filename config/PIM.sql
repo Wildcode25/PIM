@@ -1,12 +1,9 @@
-DROP DATABASE IF EXISTS PIM;
-
-CREATE DATABASE PIM;
 
 CREATE TABLE customer (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50),
-    email VARCHAR(50),
-    password VARCHAR(50)
+    email VARCHAR(50) UNIQUE,
+    password TEXT
 );
 
 CREATE TABLE product (
@@ -23,7 +20,7 @@ CREATE TABLE product (
 
 CREATE TABLE category (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50),
+    name VARCHAR(50) UNIQUE,
     description TEXT
 );
 
@@ -44,5 +41,3 @@ INSERT INTO category (name, description) VALUES
 ('cooling', 'Storage foods'),
 ('home', 'For the home');
 
-INSERT INTO customer(name, email, password)
-VALUES('Emmanuel', 'enmanuelcastillo1999@gmail.com', 'mordex123');

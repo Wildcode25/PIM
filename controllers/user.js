@@ -1,10 +1,14 @@
 import {loginSchema} from '../schemas/loginUser.js'
 import {validateInput} from './validateFunction.js';
-import { UserModel } from '../models/user.js';
 import { registerSchema } from '../schemas/userRegister.js';
 import jwt  from 'jsonwebtoken';
-const userModel = new UserModel();
+import bcrypt from "bcrypt";
+
+
 export class UserController{
+    constructor({UserModel}){
+        this.userModel = new UserModel();
+    }
     getAllUsers = async (req, res)=>{
         const {user} = req.session
         console.log(user)
@@ -13,7 +17,7 @@ export class UserController{
         })
         try{
             
-            const users = await userModel.getUsers()
+            const users = await this.userModel.getUsers()
             console.log(users)
             if(users.length>0) return res.json(users)
             res.json({messege: "there are not users"})    
@@ -27,8 +31,10 @@ export class UserController{
         try{
            const result = validateInput(loginSchema, req.body)
            if(result.success){
-            const user = await userModel.loginUser({input: result.data})
-            if(user==null) return res.json({messege: "there is not user registed"});
+            const user = await this.userModel.loginUser({email: result.data.email})
+            if(!user) return res.json({messege: "there is not user registed"});
+            const isValid = await bcrypt.compare(result.data.password, user.password);
+            if (!isValid) return res.json({ message: "Incorrect password" });
             const token = jwt.sign(
                 user,
                 process.env.JWT_PRIVATE_KEY,
@@ -46,25 +52,26 @@ export class UserController{
                 }
             ).send({
                 message: 'user logged',
-                token
+                user
             })   
 
            }
            res.status(401).json({error: JSON.parse(result.error.message)})
 
         }catch(e){
-            throw new Error(e)
+            console.error(`Error in login ${e.message}`)
         }
     }
     createUser = async (req, res)=>{
         const result = validateInput(registerSchema,req.body);
-        console.log(result)
+        const SALT = process.env.SALT||12
         if(result.success){
-            const data = await userModel.createUser({input: result.data})
-            return res.json({ data})
+            result.data.password = await bcrypt.hash(result.data.password, SALT)
+            const createdUser = await this.userModel.createUser({input: result.data});
+            if(!createdUser) return res.json("User already exist")
+            return res.json({ createdUser})
         }
-        return res.status(404).json({error: JSON.parse(result.error.message)})
-
+        return res.status(404).json(JSON.parse(result.error.message))
     }
     logout = async (req, res)=>{
         res.clearCookie('access_token').json({
